@@ -62,9 +62,8 @@ export default {
     this.username = getStore('username')
     if (this.username) {
       this.showLogin = false
-    } else {
-      this.getCaptchaCode()
     }
+    this.getCaptchaCode()
   },
   computed: {
     ...mapState(['userInfo']),
