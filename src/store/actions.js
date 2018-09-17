@@ -1,4 +1,4 @@
-import { getUser } from './service/getData'
+import { getUser } from '@/service/getData'
 import { GET_USERINFO } from './mutation-type'
 
 export default {

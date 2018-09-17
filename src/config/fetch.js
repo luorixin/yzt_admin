@@ -10,7 +10,7 @@ export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
     })
     if (dataStr !== '') {
       dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'))
-      url = url + '?' +dataStr
+      url = url + '?' + dataStr
     }
   }
   if (window.fetch && method === 'fetch') {
@@ -41,8 +41,6 @@ export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
       let requestObj
       if (window.XMLHttpRequest) {
         requestObj = new XMLHttpRequest()
-      } else {
-        requestObj = new ActiveXObject()
       }
       let sendData = ''
       if (type === 'POST') {
@@ -66,5 +64,4 @@ export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
       }
     })
   }
-
 }

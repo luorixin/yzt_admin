@@ -1,4 +1,5 @@
-import { GET_USERINFO, RESET_USERNAME } from './mutation-type'
+import {GET_USERINFO, RESET_USERNAME, RECORD_USERINFO} from './mutation-type'
+import {setStore} from '../config/mUtils'
 
 export default {
   [GET_USERINFO] (state, info) {
@@ -11,10 +12,16 @@ export default {
     if (!info.message) {
       state.userInfo = {...info}
     } else {
-      state.userInfo = null;
+      state.userInfo = null
     }
   },
   [RESET_USERNAME] (state, username) {
     state.userInfo = Object.assign({}, state.userInfo, {username})
+  },
+  // 记录用户信息
+  [RECORD_USERINFO] (state, info) {
+    state.userInfo = info
+    state.login = true
+    setStore('username', info.username)
   }
 }
