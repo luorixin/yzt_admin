@@ -7,7 +7,7 @@ import mutations from './mutations'
 Vue.use(Vuex)
 
 const state = {
-  userInfo: null // 用户信息
+  userInfo: {} // 用户信息
 }
 
 export default new Vuex.Store({

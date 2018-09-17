@@ -4,21 +4,15 @@
       <div class="site-content">
         <div class="brand-info">
           <h2 class="brand-info__text">yzt_admin</h2>
-          <p class="brand-info__intro">一站通管理后台</p>
         </div>
-        <div class="login-main">
+        <div class="login-main" v-if="showLogin">
           <form class="login-form">
             <section class="input_container">
-              <input type="text" placeholder="账号" name="phone" maxlength="11" v-model="username">
+              <input type="text" autocomplete="off" placeholder="账号" name="phone" maxlength="11" v-model="username">
             </section>
             <section class="input_container">
-              <input v-if="!showPassword" type="password" placeholder="密码"  v-model="password">
-              <input v-else type="text" placeholder="密码"  v-model="password">
-              <div class="button_switch" :class="{change_to_text: showPassword}">
-                <div class="circle_button" :class="{trans_to_right: showPassword}" @click="changePassWordType"></div>
-                <span>abc</span>
-                <span>...</span>
-              </div>
+              <input v-if="!showPassword" autocomplete="off"  type="password" placeholder="密码"  v-model="password">
+              <input v-else type="text" autocomplete="off"  placeholder="密码"  v-model="password">
             </section>
             <section class="input_container captcha_code_container">
               <input type="text" placeholder="验证码" maxlength="4" v-model="codeNumber">
@@ -31,7 +25,14 @@
               </div>
             </section>
           </form>
-          <button class="login_container" @click="mobileLogin">登录</button>
+          <button class="btn btn-primary" @click="mobileLogin">登录</button>
+          <p class="tip" v-show="showAlert">{{alertText}}</p>
+        </div>
+        <div class="login-main"  v-else>
+          <section class="login-has">
+            <p>系统检测到已有账号 {{username}} 登录。</p>
+            <p><router-link  tag='span' to="main">登录</router-link> | <span @click="toggleLogin">更换账号</span></p>
+          </section>
         </div>
       </div>
     </div>
@@ -39,8 +40,9 @@
 </template>
 
 <script>
-import {mapMutations} from 'vuex'
+import {mapMutations, mapState} from 'vuex'
 import {getcaptchas, login, getUser} from '../../service/getData'
+import {getStore} from '../../config/mUtils'
 export default {
   name: 'login',
   data () {
@@ -51,17 +53,24 @@ export default {
       validate_token: null,
       captchaCodeImg: '',
       codeNumber: null,
+      showLogin: true,
       showAlert: null,
       alertText: null
     }
   },
-  created () {
-    this.getCaptchaCode()
+  mounted () {
+    this.username = getStore('username')
+    if (this.username) {
+      this.showLogin = false
+    } else {
+      this.getCaptchaCode()
+    }
   },
   computed: {
+    ...mapState(['userInfo']),
     // 判断手机号码
     rightPhoneNumber: function () {
-      return /^1\d{10}$/gi.test(this.username)
+      return true
     }
   },
   methods: {
@@ -71,6 +80,10 @@ export default {
     // 是否显示密码
     changePassWordType () {
       this.showPassword = !this.showPassword
+    },
+    toggleLogin () {
+      this.showLogin = !this.showLogin
+      this.username = ''
     },
     async getCaptchaCode () {
       try {
@@ -95,12 +108,23 @@ export default {
       console.log(result)
       if (result.meta.code === 0) {
         this.$cookie.set('token', result.data.token)
-        this.userInfo = await getUser(this.username)
-        this.RECORD_USERINFO(this.userInfo)
+        let info = await getUser(this.username)
+        if (info.meta.code === 0) {
+          this.RECORD_USERINFO(info.data.items[0])
+          this.$router.push('main')
+        } else {
+          this.showAlert = true
+          this.alertText = info.meta.message
+        }
       } else {
         this.showAlert = true
         this.alertText = result.meta.message
       }
+    }
+  },
+  watch: {
+    userInfo: function (newValue) {
+      console.log(newValue)
     }
   }
 }
@@ -114,7 +138,7 @@ export default {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: #fff;
+    background-color: #324057;
     overflow: hidden;
     &:before {
       position: fixed;
@@ -126,7 +150,7 @@ export default {
       content: '';
       /*background-image: url('../../assets/img/login_bg.jpg');*/
       /*background-size: cover;*/
-      background: #fff;
+      background: #324057;
     }
   }
   .site-content__wrapper{
@@ -144,31 +168,58 @@ export default {
       min-height: 100%;
       padding: 30px 30px 30px 30px;
       .brand-info {
-        margin: 30px auto 0 auto;
+        margin: auto;
         color: #333;
         text-align: center;
         .brand-info__text {
           margin:  0 0 22px 0;
-          font-size: 48px;
-          font-weight: 400;
+          font-size: 34px;
+          font-weight: bold;
           text-transform : uppercase;
+          color: #fff;
         }
         .brand-info__intro {
           margin: 10px 0;
+          color: #fff;
           font-size: 16px;
           line-height: 1.58;
           opacity: .6;
         }
       }
       .login-main {
-        margin: 30px auto;
+        width: 360px;
+        height: 250px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -125px;
+        margin-left: -180px;
+        padding: 25px;
+        @include borderRadius(5px);
+        text-align: center;
+        background-color: #fff;
         .login-form{
           background: #fff;
           .input_container {
             display: flex;
             justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #f1f1f1;
+            height: 40px;
+            border: 1px solid #f1f1f1;
+            transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+            margin-bottom: 10px;
+            &:hover {
+              border-color: #8391a5;
+            }
+            &:focus {
+              border-color: #20a0ff;
+            }
+            input{
+              line-height: 36px;
+              font-size: 12px;
+              height: 36px;
+              width: 100%;
+              padding: 3px 10px;
+            }
             button{
               padding: 10px;
               border: 1px;
@@ -179,29 +230,44 @@ export default {
             }
           }
           .captcha_code_container{
-            height: 30px;
             .img_change_img{
               display: flex;
               align-items: center;
               img{
-                @include wh(30px, 30px);
+                @include wh(50px, 30px);
                 margin-right: 10px;
               }
               .change_img{
                 display: flex;
                 flex-direction: 'column';
                 flex-wrap: wrap;
-                width: 2rem;
+                width: 40px;
                 justify-content: center;
                 p{
-                  @include sc(.55rem, #666);
+                  @include sc(10px, #666);
                 }
                 p:nth-of-type(2){
                   color: #3b95e9;
-                  margin-top: .2rem;
+                  margin-top: 1px;
+                  cursor: pointer;
                 }
               }
             }
+          }
+        }
+        .btn {
+          width: 100%;
+          font-size: 16px;
+        }
+        .tip {
+          @include sc(12px, #ef4136);
+          margin-top: 3px;
+        }
+        .login-has {
+          margin-top: 80px;
+          span{
+            color: #ef4136;
+            cursor: pointer;
           }
         }
       }

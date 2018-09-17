@@ -12,7 +12,7 @@ const http = axios.create({
  */
 http.interceptors.request.use(config => {
   const token = Vue.cookie.get('token') // 请求头带上token
-  config.data = JSON.stringify(config.data)
+  config.data = qs.stringify(config.data)
   config.headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
@@ -70,7 +70,7 @@ export function get (url, params = {}) {
  */
 export function post (url, data = {}) {
   return new Promise((resolve, reject) => {
-    http.post(url, qs.stringify(data))
+    http.post(url, data)
       .then(response => {
         resolve(response.data)
       })
