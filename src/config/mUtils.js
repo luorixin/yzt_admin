@@ -1,3 +1,4 @@
+import Vue from 'vue'
 /**
  * 存储localStorage
  */
@@ -23,4 +24,5 @@ export const getStore = name => {
 export const removeStore = name => {
   if (!name) return
   window.localStorage.removeItem(name)
+  Vue.cookie.delete('token')
 }

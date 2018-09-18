@@ -31,7 +31,7 @@
         <div class="login-main"  v-else>
           <section class="login-has">
             <p>系统检测到已有账号 {{username}} 登录。</p>
-            <p><router-link  tag='span' to="main">登录</router-link> | <span @click="toggleLogin">更换账号</span></p>
+            <p><router-link  tag='span' to="home">登录</router-link> | <span @click="toggleLogin">更换账号</span></p>
           </section>
         </div>
       </div>
@@ -110,7 +110,7 @@ export default {
         let info = await getUser(this.username)
         if (info.meta.code === 0) {
           this.RECORD_USERINFO(info.data.items[0])
-          this.$router.push('main')
+          this.$router.push('home')
         } else {
           this.showAlert = true
           this.alertText = info.meta.message

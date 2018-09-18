@@ -10,7 +10,6 @@ body, div, span, header, footer, nav, section, aside, article, ul, dl, dt, dd, l
   font-style: normal;
   text-decoration: none;
   border: none;
-  color: #333;
   font-weight: normal;
   font-family: "Microsoft Yahei";
   box-sizing: border-box;
@@ -99,14 +98,13 @@ textarea { -webkit-appearance: none;}
   outline: 0
 }
 
-.clear:after{
-  content: '';
-  display: block;
-  clear: both;
+.clear:after,.clear:before {
+  content: " ";
+  display: table
 }
 
-.clear{
-  zoom:1;
+.clear:after {
+  clear: both
 }
 
 

@@ -40,7 +40,7 @@ http.interceptors.response.use(response => {
 /**
  * 清除登录信息
  */
-function clearLoginInfo () {
+export function clearLoginInfo () {
   Vue.cookie.delete('token')
 }
 

@@ -6,7 +6,14 @@ import router from './router'
 import store from '@/store'
 import VueCookie from 'vue-cookie'
 import {get, put, post} from '@/service/httpRequest'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import solid from '@fortawesome/fontawesome-free-solid'
+import regular from '@fortawesome/fontawesome-free-regular'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+library.add(solid)
+library.add(regular)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use(VueCookie)
 Vue.config.productionTip = false
 Vue.prototype.$get = get // ajax请求方法

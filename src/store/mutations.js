@@ -1,5 +1,5 @@
-import {GET_USERINFO, RESET_USERNAME, RECORD_USERINFO} from './mutation-type'
-import {setStore} from '../config/mUtils'
+import {GET_USERINFO, RESET_USERNAME, RECORD_USERINFO, LOGOUT} from './mutation-type'
+import {setStore, removeStore} from '../config/mUtils'
 
 export default {
   [GET_USERINFO] (state, info) {
@@ -23,5 +23,11 @@ export default {
     state.userInfo = info
     state.login = true
     setStore('username', info.username)
+  },
+  // 退出
+  [LOGOUT] (state) {
+    state.userInfo = null
+    state.login = false
+    removeStore('username')
   }
 }
