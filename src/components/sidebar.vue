@@ -2,7 +2,7 @@
   <aside class="sidebar">
     <div class="sidebar__inner">
       <ul class="sidebar__menu">
-        <li :class="{'menu-item':!menu.subMenu.length,'submenu-item':menu.subMenu.length}" v-for="menu in menus" :key="menu.key" @click.prevent="changeRoute(menu)">
+        <li :class="{'menu-item':!menu.subMenu.length,'submenu-item':menu.subMenu.length,'is-active':menu.url===activeMenu}" v-for="menu in menus" :key="menu.key" @click.prevent="changeRoute(menu)">
           <template v-if="!menu.subMenu.length">
             <font-awesome-icon :icon="menu.icon" />
             <span>{{menu.name}}</span>
@@ -15,7 +15,7 @@
             </div>
             <transition name="fade">
             <ul class="sidebar__menu submenu--inline" v-show="menu.isSubShow">
-              <li class="menu-item" v-for="sub in menu.subMenu" :key="sub.name" @click.stop="changeRoute(sub)">
+              <li class="menu-item" :class="{'is-active':sub.url===activeMenu}" v-for="sub in menu.subMenu" :key="sub.name" @click.stop="changeRoute(sub)">
                 <font-awesome-icon :icon="sub.icon" />
                 <span>{{sub.name}}</span>
               </li>
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import {mapMutations, mapGetters} from 'vuex'
 export default {
   name: 'SideBar',
   data () {
@@ -48,25 +49,47 @@ export default {
           isSubShow: false,
           subMenu: [
             {
-              name: 'test',
-              url: 'login',
+              name: 'theme',
+              url: 'theme',
               icon: 'dna',
               isSubShow: false,
               subMenu: []
             }
           ]
         }
-      ]
+      ],
+      activeMenu: 'home'
     }
   },
+  mounted () {
+    console.log(this.activeMenu)
+  },
+  computed: {
+    ...mapGetters(['getActiveMenu'])
+  },
   methods: {
+    ...mapMutations(['CHANGE_MENU']),
     changeRoute (menu) {
-      console.log(menu)
       if (menu.url) {
+        // this.CHANGE_MENU(menu.url)
         this.$router.push(menu.url)
       } else {
         menu.isSubShow = !menu.isSubShow
       }
+    }
+  },
+  created () {
+    console.log(this.activeMenu)
+  },
+  watch: { // 动态监听state的变化，实时改变页面的数据
+    getActiveMenu: function (activeMenu) {
+      console.log(activeMenu)
+      this.activeMenu = activeMenu // data声明一个变量，在html引用。如果storage的值发生变化就实时刷新变量的值。
+    },
+    '$route' (to, from) {
+      // 对路由变化作出响应...
+      // console.log(to, from)
+      this.CHANGE_MENU(to.name)
     }
   }
 }
@@ -95,8 +118,9 @@ export default {
       height: 100%;
       padding-bottom: 15px;
       overflow-y: scroll;
+      background: #324157;
       .sidebar__menu{
-        background: #263238;
+        background: #324157;
         list-style: none;
         position: relative;
         margin: 0;
@@ -116,6 +140,9 @@ export default {
           }
           &:hover{
             color: #fff;
+          }
+          &.is-active{
+            color: #20a0ff;
           }
         }
         .submenu-item{
@@ -143,6 +170,7 @@ export default {
             padding: 0 20px;
             min-width: 200px;
             color: #8a979e;
+            background-color: #1f2d3d;
             .menu-item{
               padding-left: 20px;
               height: 50px;

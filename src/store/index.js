@@ -7,7 +7,8 @@ import mutations from './mutations'
 Vue.use(Vuex)
 
 const state = {
-  userInfo: {} // 用户信息
+  userInfo: {}, // 用户信息
+  activeMenu: 'home'
 }
 
 export default new Vuex.Store({

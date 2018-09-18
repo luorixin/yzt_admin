@@ -1,10 +1,10 @@
 <template>
-  <div>123123</div>
+  <div>12312</div>
 </template>
 
 <script>
 export default {
-  name: 'error404'
+  name: 'theme'
 }
 </script>
 

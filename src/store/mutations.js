@@ -1,4 +1,4 @@
-import {GET_USERINFO, RESET_USERNAME, RECORD_USERINFO, LOGOUT} from './mutation-type'
+import {GET_USERINFO, RESET_USERNAME, RECORD_USERINFO, LOGOUT, CHANGE_MENU} from './mutation-type'
 import {setStore, removeStore} from '../config/mUtils'
 
 export default {
@@ -29,5 +29,9 @@ export default {
     state.userInfo = null
     state.login = false
     removeStore('username')
+  },
+  [CHANGE_MENU] (state, menu) {
+    state.activeMenu = menu
+    setStore('activeMenu', menu)
   }
 }
