@@ -2,7 +2,7 @@
   <aside class="sidebar">
     <div class="sidebar__inner">
       <ul class="sidebar__menu">
-        <li :class="{'menu-item':!menu.subMenu.length,'submenu-item':menu.subMenu.length,'is-active':menu.url===activeMenu}" v-for="menu in menus" :key="menu.key" @click.prevent="changeRoute(menu)">
+        <li :class="{'menu-item':!menu.subMenu.length,'submenu-item':menu.subMenu.length,'is-active':menu.url===onRoutes}" v-for="menu in menus" :key="menu.key" @click.prevent="changeRoute(menu)">
           <template v-if="!menu.subMenu.length">
             <font-awesome-icon :icon="menu.icon" />
             <span>{{menu.name}}</span>
@@ -15,7 +15,7 @@
             </div>
             <transition name="fade">
             <ul class="sidebar__menu submenu--inline" v-show="menu.isSubShow">
-              <li class="menu-item" :class="{'is-active':sub.url===activeMenu}" v-for="sub in menu.subMenu" :key="sub.name" @click.stop="changeRoute(sub)">
+              <li class="menu-item" :class="{'is-active':sub.url===onRoutes}" v-for="sub in menu.subMenu" :key="sub.name" @click.stop="changeRoute(sub)">
                 <font-awesome-icon :icon="sub.icon" />
                 <span>{{sub.name}}</span>
               </li>
@@ -65,7 +65,10 @@ export default {
     console.log(this.activeMenu)
   },
   computed: {
-    ...mapGetters(['getActiveMenu'])
+    ...mapGetters(['getActiveMenu']),
+    onRoutes () {
+      return this.$route.path.replace('/', '')
+    }
   },
   methods: {
     ...mapMutations(['CHANGE_MENU']),
